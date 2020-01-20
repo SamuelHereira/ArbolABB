@@ -120,6 +120,14 @@ TREE * findNode( TREE * tree, int value ) {
 
 }
 
+int isLeafaNode( TREE * tree ) {
+	if( tree->left == NULL && tree->right == NULL) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
 TREE * findSuccessor( TREE * RightSubTree ) {
 
 	if( RightSubTree->left == NULL ) {
@@ -143,20 +151,27 @@ TREE * findPredecessor( TREE * leftSubTree ) {
 
 void replaceNode( TREE * node, TREE * secondNode )
 {
-	printf("entra\n");
 	if( node->value > secondNode->value ) {
 		secondNode->right = node->right;
 		if( node->left && node->left == secondNode ) {
-			secondNode->left = NULL;		
+			if( isLeafaNode(secondNode) ) {
+				secondNode->left = NULL;
+			} 
+			
 		} else {
-
+			
 			secondNode->left = node->left;
 		}
 
 	} else {
+		
 		secondNode->left = node->left;
+
 		if( node->right && node->right == secondNode ) {
-			secondNode->right = NULL;		
+			if( isLeafaNode(secondNode) ) {
+				secondNode->right = NULL;
+			} 
+					
 		} else {
 
 			secondNode->right = node->right;
@@ -181,10 +196,21 @@ void deleteNode( TREE ** tree, int value )
 	} else {
 		if( (*tree)->value	== value ) {
 			
-			TREE * successor = findSuccessor( (*tree)->right );
-			TREE * successorFather = findFather( *tree, successor->value );
-			successorFather->left = successor->right;
-			replaceNode( *tree, successor );
+			if( isLeafaNode(*tree) ) {
+				*tree = NULL;
+			} else {
+				TREE * successor = findSuccessor( (*tree)->right );
+				TREE * successorFather = findFather( *tree, successor->value );
+				if( successor->value != (*tree)->right->value ) {
+					successorFather->left = successor->right;
+				}
+				replaceNode( *tree, successor );
+			}
+
+			
+			
+			
+			
 		} else {
 
 			TREE * node = findNode( *tree, value );
@@ -300,17 +326,14 @@ int main()
 {
 	TREE * tree = NULL;
 	insertNode( &tree , 44 );
-	insertNode( &tree , 23 );
-	insertNode( &tree , 67 );
-	insertNode( &tree , 98 );
+	insertNode( &tree , 47 );
+	insertNode( &tree , 49 );
 	insertNode( &tree , 54 );
 	insertNode( &tree , 65 );
-	insertNode( &tree , 47 );
-	insertNode( &tree , 50 );
-	insertNode( &tree , 49 );
-	insertNode( &tree , 52 );
-	insertNode( &tree , 30 );
-	insertNode( &tree , 27 );
+	insertNode( &tree , 67 );
+	insertNode( &tree , 98 );
+	
+	
 
 	preOrder( tree );
 	printf("\n");
@@ -318,16 +341,8 @@ int main()
 	printf("\n");
 	postOrder ( tree );
 	printf("\n");
-	searchNode( tree, 98 );
-	searchNode( tree, 78 );
 	
 	printf( "La altura del arbol es: %d\n", treeHeight( tree ) );
-	
-		
-	printf("\neliminando 30\n");
-	deleteNode( &tree, 30 );
-	inOrder ( tree );
-	printf("\n");
 	
 	printf("\neliminando 54\n");
 	deleteNode( &tree, 54 );
@@ -338,9 +353,34 @@ int main()
 	deleteNode( &tree, 49 );
 	inOrder ( tree );
 	printf("\n");
-	
-	printf("\neliminando 50\n");
-	deleteNode( &tree, 50 );
+
+	printf("\neliminando 44\n");
+	deleteNode( &tree, 44 );
+	inOrder ( tree );
+	printf("\n");
+
+	printf("\neliminando 47\n");
+	deleteNode( &tree, 47 );
+	inOrder ( tree );
+	printf("\n");
+
+	printf("\neliminando 67\n");
+	deleteNode( &tree, 67 );
+	inOrder ( tree );
+	printf("\n");
+
+	printf("\neliminando 98\n");
+	deleteNode( &tree, 98 );
+	inOrder ( tree );
+	printf("\n");
+
+	printf("\neliminando 65\n");
+	deleteNode( &tree, 65 );
+	inOrder ( tree );
+	printf("\n");
+
+	printf("\neliminando 65\n");
+	deleteNode( &tree, 65 );
 	inOrder ( tree );
 	printf("\n");
 
